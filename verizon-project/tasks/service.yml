@@ -1,0 +1,16 @@
+  - name: install nfs-utils
+    dnf:
+     name: nfs-utils
+     state: present
+    delegate_to: '{{ nfsserver }}'
+
+  - name: enable the services
+    service:
+     name: "{{ item }}"
+     state: started
+     enabled: yes
+    delegate_to: '{{ nfsserver }}'
+    loop:
+     - nfs-server
+     - rpcbind
+

@@ -1,0 +1,30 @@
+  - name: install the nfs-utils
+    dnf:
+     name: nfs-utils
+     state: latest
+    delegate_to: "{{ item }}"
+    loop:
+       - '{{ client1 }}'
+       - '{{ client2 }}'
+
+  - name: create the mount point
+    file:
+     path: '{{ mountdir }}'
+     state: directory
+    delegate_to: "{{ item }}"
+    loop:
+       - '{{ client1 }}'
+       - '{{ client2 }}'
+
+  - name: permanently mount in fstab
+    mount:
+     path: '{{ mountdir }}'
+     src: '{{ nfsserver }}:{{ nfsshare }}'
+     fstype: nfs
+     state: mounted
+    delegate_to: "{{ item }}"
+    loop:
+       - '{{ client1 }}'
+       - '{{ client2 }}'
+
+

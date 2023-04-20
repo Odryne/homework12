@@ -1,0 +1,30 @@
+---
+# tasks file for verizon-project
+
+- name: format task
+  import_tasks: format.yml
+
+- name: mount task
+  import_tasks: mount.yml
+
+- name: service task
+  import_tasks: service.yml
+
+- name: firewall task
+  import_tasks: firewall.yml
+
+- name: selinux task
+  import_tasks: selinux.yml
+
+- name: export task
+  import_tasks: export.yml
+
+- name: clientconfig task
+  import_tasks: clientconfig.yml
+
+
+
+
+
+
+

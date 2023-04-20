@@ -1,0 +1,13 @@
+  - name: allow the services on firewall
+    firewalld:
+     service: "{{ item }}"
+     permanent: true
+     state: enabled
+     immediate: true
+    delegate_to: '{{ nfsserver }}'
+    loop:
+     - nfs
+     - rpc-bind
+     - mountd
+
+

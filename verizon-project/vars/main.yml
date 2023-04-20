@@ -1,0 +1,10 @@
+---
+# vars file for verizon-project
+    nfsshare: "/verizon-data-shared-drive"
+    disk: "/dev/nvme0n2"
+    filesystem: "xfs"
+    nfsclients: "node*"
+    nfsserver: "node3"
+    mountdir: "/verizon-client"
+    client1: "node1"
+    client2: "node2"

@@ -1,0 +1,7 @@
+  - name: format the drive nvme0n2
+    filesystem:
+     fstype: '{{ filesystem }}'
+     dev: '{{ disk }}'
+    delegate_to: '{{ nfsserver }}'
+
+

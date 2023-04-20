@@ -1,0 +1,113 @@
+- hosts: node3
+  become: yes
+  vars:
+    nfsshare: "/verizon-data-shared-drive"
+    disk: "/dev/nvme0n2"
+    filesystem: "xfs"
+    nfsclients: "node*"
+    nfsserver: "node3"
+
+  handlers:
+  - name: restart the nfs service
+    service:
+     name: nfs-server
+     state: restarted
+
+
+  tasks:
+
+  - name: format the drive nvme0n2
+    filesystem:
+     fstype: '{{ filesystem }}'
+     dev: '{{ disk }}'
+
+  - name: create the nfs-share
+    file:
+     path: '{{ nfsshare }}'
+     state: directory
+     mode: '0777'
+
+  - name: mount it
+    mount:
+     path: '{{ nfsshare }}'
+     src: '{{ disk }}'
+     fstype: '{{ filesystem }}'
+     state: mounted
+
+  - name: install nfs-utils
+    dnf:
+     name: nfs-utils
+     state: present
+
+  - name: enable the services
+    service:
+     name: "{{ item }}"
+     state: started
+     enabled: yes
+    loop:
+     - nfs-server
+     - rpcbind
+
+  - name: allow the services on firewall
+    firewalld:
+     service: "{{ item }}" 
+     permanent: true
+     state: enabled
+     immediate: true
+    loop:
+     - nfs
+     - rpc-bind
+     - mountd
+
+  - name: enforce selinux
+    selinux:
+     policy: targeted
+     state: enforcing
+
+  - name: modify the etc/exports
+    lineinfile:
+     path: /etc/exports
+     line: '{{ nfsshare}} {{ nfsclients }}(rw,sync,no_root_squash)'
+    notify: 
+     - restart the nfs service 
+
+  - name: exports the nfsshare
+    command: 
+       showmount -e  
+
+- hosts: node2,node1
+  become: yes
+  vars:
+    mountdir: "/verizon-client"
+    nfsserver: "node3"
+    nfsshare: "/verizon-data-shared-drive"
+
+
+  tasks:
+
+  - name: install the nfs-utils
+    dnf:
+     name: nfs-utils
+     state: latest
+
+  - name: create the mount point
+    file:
+     path: '{{ mountdir }}'
+     state: directory
+
+  - name: permanently mount in fstab
+    mount:
+     path: '{{ mountdir }}'
+     src: '{{ nfsserver }}:{{ nfsshare }}'
+     fstype: nfs
+     state: mounted
+     
+
+
+ 
+
+
+
+
+
+

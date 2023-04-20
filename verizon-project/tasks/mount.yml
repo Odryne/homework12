@@ -1,0 +1,16 @@
+  - name: create the nfs-share
+    file:
+     path: '{{ nfsshare }}'
+     state: directory
+     mode: '0777'
+    delegate_to: '{{ nfsserver }}'
+
+  - name: mount it
+    mount:
+     path: '{{ nfsshare }}'
+     src: '{{ disk }}'
+     fstype: '{{ filesystem }}'
+     state: mounted
+    delegate_to: '{{ nfsserver }}'
+
+

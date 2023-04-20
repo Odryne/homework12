@@ -1,0 +1,14 @@
+  - name: modify the etc/exports
+    lineinfile:
+     path: /etc/exports
+     line: '{{ nfsshare}} {{ nfsclients }}(rw,sync,no_root_squash)'
+    delegate_to: '{{ nfsserver }}'
+    notify:
+     - restart the nfs service
+
+  - name: exports the nfsshare
+    command:
+       showmount -e
+    delegate_to: '{{ nfsserver }}'
+
+

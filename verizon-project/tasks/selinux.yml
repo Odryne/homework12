@@ -1,0 +1,7 @@
+  - name: enforce selinux
+    selinux:
+     policy: targeted
+     state: enforcing
+    delegate_to: '{{ nfsserver }}'
+
+
